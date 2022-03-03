@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <title>Document</title>
+</head>
+
+<body class="h-100 w-100 d-flex flex-row align-items-center">
+
+
+    <div class="w-100 container-fluid justify-content-center p-5 pt-sm-2 m-2 ">
+        <div class="d-flex flex-row d-sm-inline">
+            <button onclick="showForm()" class="m-1 p-0">Add Course</button>
+            <button onclick="showCourses()" class="m-1 p-0">Show Courses</button>
+        </div>
+        <form id="courses-form" class="container-fluid p-lg-0" hidden>
+            <div id="alert"></div>
+            <div class="row mt-5 mt-sm-1 mt-lg-3">
+                <select name="name" id="course-name-options" class="form-select col-sm m-sm-2 m-lg-4">
+                </select>
+                <select name="lecturer" id="lecturer-options" class="form-select mt-4 m-sm-0 col-sm m-sm-2 m-lg-4">
+                </select>
+            </div>
+            <div class="row mt-5 mt-sm-1 mt-lg-3">
+                <div class="p-0 col-sm m-sm-2 m-lg-4">
+                    <label for="hours" class="p-0">Hours</label>
+                    <input type="number" name="hours" required class="form-control">
+                </div>
+                <div class="p-0 col-sm m-sm-2 m-lg-4">
+                    <label for="cost" class="p-0">Cost</label>
+                    <input type="number" name="cost" required class="form-control">
+                </div>
+            </div>
+            <div class="row mt-5 mt-sm-1 mt-lg-3">
+                <div class="p-0 col m-sm-2 m-lg-4">
+                    <label for="openingDate" class="p-0">Opan date</label>
+                    <input type="date" name="openingDate" placeholder="opening date" required
+                        class="form-control mb-5 mb-sm-2">
+                </div>
+            </div>
+            <div class="row mt-sm-1 mt-lg-3">
+                <button type="submit" class="col m-2 btn-outline-primary">Submit</button>
+                <button type="reset" class="col m-2 btn-outline-secondary">Reset</button>
+            </div>
+        </form>
+        <table class="table table-responsive p-0" id="courses-table"></table>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+        crossorigin="anonymous"></script>
+    <script src="dist/bundle.js"></script>
+</body>
+
+</html>
