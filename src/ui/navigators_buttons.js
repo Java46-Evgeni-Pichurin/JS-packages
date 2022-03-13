@@ -1,14 +1,26 @@
 export default class NavigatorButtons {
-    #arrayOfId
-    constructor(arrayOfId){
-        this.#arrayOfId = arrayOfId;
+    #buttons
+    #activeIndex
+    constructor(buttonIds) {
+        this.#buttons = buttonIds.map(id => document.getElementById(id));
+        this.#activeIndex = undefined
     }
-    setActive(index){
-        const a = "btn btn-outline-primary col-sm-2";
-        return document.querySelector(`#${this.#arrayOfId[index]}`).setAttribute("class", a + " active");
+    setActive(index) {
+        if (this.#activeIndex != undefined) {
+            this.#removeStyles();
+        }
+        this.#activeIndex = index;
+        this.#showStyles();
     }
-    setInActiveAll(){
-        const a = "btn btn-outline-primary col-sm-2";
-        return this.#arrayOfId.forEach(id => document.querySelector(`#${id}`).setAttribute("class", a));
+
+    #removeStyles() {
+        const ind = this.#activeIndex;
+        const btnElement = this.#buttons[ind];
+        btnElement.classList.remove("active");
+    }
+    #showStyles() {
+        const ind = this.#activeIndex;
+        const btnElement = this.#buttons[ind];
+        btnElement.classList.add("active");
     }
 }

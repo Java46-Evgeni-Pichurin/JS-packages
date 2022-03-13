@@ -42,7 +42,7 @@ export default class TableHandler {
     #getRecord(object) {
         const record = this.#columnsDefinition.map(c => `<td>${object[c.key]}</td>`);
         if (this.#removeFnName){
-            record.push(`<td><button onclick="${this.#removeFnName}('${object.id}')" class="btn text-primary"><i class="fa fa-trash">remove</button></td>`)
+            record.push(`<td><button onclick="${this.#removeFnName}('${object.id}')" class="btn text-primary"><i class="fa fa-trash"></button></td>`)
         }
         return record.join('');
     }

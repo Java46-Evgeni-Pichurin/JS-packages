@@ -8,7 +8,7 @@ export default class College {
         this.#courses = courses;
         this.#courseData = courseData;
     }
-    addCourse(course) {
+    async addCourse(course) {
         //TODO validation of the course data
         //if course is valid, then course should be added : this.#courses.add(course)
         //if course is invalid, then the method returns full message describing what's wrong
@@ -19,7 +19,7 @@ export default class College {
         course.openingDate = new Date(course.openingDate);
         const validationMessage = this.#getValidationMessage(course);
         if(!validationMessage) {
-           return this.#courses.add(course);
+          return await this.#courses.add(course);
         } 
         return validationMessage;
     }
@@ -39,20 +39,20 @@ export default class College {
           `wrong opening date - year should be in range [${minYear} - ${maxYear}]` : ''
          return message;
     }
-    getAllCourses() {
-        return this.#courses.get()
+    async getAllCourses() {
+        return await this.#courses.get()
     }
-    sortCourses(key) {
-        return _.sortBy(this.getAllCourses(), key)
+    async sortCourses(key) {
+        return _.sortBy(await this.getAllCourses(), key)
     }
-    getStatistics(lengthInterval, key){
-        return _.map(_.countBy(this.getAllCourses(), (course) => Math.floor(course[key] / lengthInterval)),
+    async getStatistics(lengthInterval, key){
+        return _.map(_.countBy(await this.getAllCourses(), (course) => Math.floor(course[key] / lengthInterval)),
                 (val, key) => ({minInterval: key * lengthInterval, maxInterval: key * lengthInterval + lengthInterval - 1, amount: val}));
     }
-    removeCourse(id){
+    async removeCourse(id){
         if (!this.#courses.exists(id)){
             throw `course with id ${id} not found`
         }
-        return this.#courses.remove(id);
+        return await this.#courses.remove(id);
     }
 }

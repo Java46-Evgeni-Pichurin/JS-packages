@@ -6,7 +6,10 @@ import TableHandler from './ui/table_handler';
 import { getRandomCourse } from './utils/randomCourse';
 import _ from 'lodash'
 import NavigatorButtons from './ui/navigators_buttons';
+import Spinner from './ui/spinner';
 
+const dataProvider = new Courses(courseData.minId, courseData.maxId);
+const dataProcessor = new College(dataProvider, courseData);
 const formHandler = new FormHandler("courses-form", "alert");
 const formHandlerGenerate = new FormHandler("generated-courses", "alert");
 const tableHandler = new TableHandler([
@@ -22,32 +25,29 @@ const tableStatisticHandler = new TableHandler([
     { key: 'amount', displayName: 'amount' },
 ], "courses-table");
 const activeButton = new NavigatorButtons([`formButton`, `coursesButtun`, `hoursDataButton`, `costDataButton`, `generation`]);
-formHandler.addHandler(course => {
-    const res = dataProcessor.addCourse(course);
+const spinner = new Spinner(`spinner`)
+formHandler.addHandler(async course => {
+    spinner.start();
+    const res = await dataProcessor.addCourse(course);
+    spinner.stop();
     if (typeof (res) !== 'string') {
         return '';
     }
     return res;
 })
-formHandlerGenerate.addHandlerGenerate(num => {
-    function createCourses() {
-        const courses = [];
-        for (let i = 0; i < num; i++) {
-            courses.push(getRandomCourse(courseData));
+formHandlerGenerate.addHandler(async generation => {
+    const number = generation.number;
+    if (number < 1) return `Wrong number of courses`;
+    else {
+        spinner.start();
+        for (let i = 0; i < number; i++) {
+            dataProcessor.addCourse(getRandomCourse(courseData)); //await N courses (How to fix)
         }
-        return courses;
+        spinner.stop();
     }
-    const courses = createCourses();
-    console.log(courses)
-    const res = dataProcessor.addCourse(courses);
-    if (typeof (res) !== 'string') {
-        return '';
-    }
-    return res;
+    return '';
 })
 
-const dataProvider = new Courses(courseData.minId, courseData.maxId, courses); // Wrong!!!
-const dataProcessor = new College(dataProvider, courseData);
 
 formHandler.fillOptions("course-name-options", courseData.courses);
 formHandler.fillOptions("lecturer-options", courseData.lectors);
@@ -56,7 +56,6 @@ function hideAll() {
     tableHandler.hideTable();
     formHandler.hide();
     tableStatisticHandler.hideTable();
-    activeButton.setInActiveAll();
     formHandlerGenerate.hide();
 }
 window.showForm = () => {
@@ -64,28 +63,38 @@ window.showForm = () => {
     formHandler.show();
     activeButton.setActive(0);
 }
-window.showCourses = () => {
+window.showCourses = async () => {
     hideAll();
-    tableHandler.showTable(dataProcessor.getAllCourses());
+    spinner.start();
     activeButton.setActive(1);
+    tableHandler.showTable(await dataProcessor.getAllCourses());
+    spinner.stop();
 }
-window.sortCourses = (key) => {
-    tableHandler.showTable(dataProcessor.sortCourses(key))
+window.sortCourses = async (key) => {
+    spinner.start();
+    tableHandler.showTable(await dataProcessor.sortCourses(key))
+    spinner.stop();
 }
-window.showCoursesHoursData = () => {
+window.showCoursesHoursData = async () => {
     hideAll();
-    tableStatisticHandler.showTable(dataProcessor.getStatistics(courseData.intervalHours, `hours`));
+    spinner.start();
     activeButton.setActive(2);
+    tableStatisticHandler.showTable(await dataProcessor.getStatistics(courseData.intervalHours, `hours`));
+    spinner.stop();
 }
-window.showCoursesCostData = () => {
+window.showCoursesCostData = async () => {
     hideAll();
-    tableStatisticHandler.showTable(dataProcessor.getStatistics(courseData.intervalCost, `cost`));
     activeButton.setActive(3);
+    spinner.start();
+    tableStatisticHandler.showTable(await dataProcessor.getStatistics(courseData.intervalCost, `cost`));
+    spinner.stop();
 }
-window.removeCourse = (id) => {
+window.removeCourse = async (id) => {
     if (window.confirm(`You are going to remove course id: ${id}`)) {
-        dataProcessor.removeCourse(+id);
-        tableHandler.showTable(dataProcessor.getAllCourses());
+        spinner.start();
+        await dataProcessor.removeCourse(+id);
+        tableHandler.showTable(await dataProcessor.getAllCourses());
+        spinner.stop();
     }
 }
 window.showGeneration = () => {

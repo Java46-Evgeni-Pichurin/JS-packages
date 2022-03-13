@@ -8,52 +8,35 @@ export default class FormHandler {
         this.#inputElements = document.querySelectorAll(`#${idForm} [name]`);
     }
     addHandler(fnProcessor) {
-        this.#formElement.addEventListener('submit', event => {
+        this.#formElement.addEventListener('submit', async event => {
             event.preventDefault();
             const data = Array.from(this.#inputElements)
-                .reduce((obj, element) => {
-                    obj[element.name] = element.value;
-                    return obj;
-                }, {})
-            const message = fnProcessor(data);
+            .reduce((obj, element) => {
+                obj[element.name] = element.value;
+                return obj;
+            }, {})
+            const message = await fnProcessor(data);
             if (!message) {
                 this.#formElement.reset(); //everything ok
-                this.#alertElement.innerHTML = '';
+                const alertCompleted = `
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <strong>Success!</strong> 
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>`;
+                this.#alertElement.innerHTML = alertCompleted;
             } else {
                 const alert = `
             <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <strong>Error!</strong> ${message}.
+                <strong>Error! <br></strong> ${message}
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>`;
-                this.#alertElement.innerHTML = alert;
+            this.#alertElement.innerHTML = alert;
             }
         })
     }
-    addHandlerGenerate(fnProcessor) {
-        let res;
-        this.#formElement.addEventListener('submit', event => {
-            event.preventDefault();
-            this.#inputElements = document.querySelector('[name="number"]');
-            const number = this.#inputElements.value;
-            res = number;
-            const message = fnProcessor(res);
-            if (!message) {
-                this.#formElement.reset(); //everything ok
-                this.#alertElement.innerHTML = '';
-            } else {
-                const alert = `
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <strong>Error!</strong> ${message}.
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>`;
-                this.#alertElement.innerHTML = alert;
-
-            }
-        })
-    }
-    fillOptions(idOptions, options) {
-        document.getElementById(idOptions).innerHTML +=
-            `${getOptions(options)}`
+    fillOptions(idOptions, options ) {
+        document.getElementById(idOptions).innerHTML += 
+        `${getOptions(options)}`
     }
     show() {
         this.#formElement.hidden = false;
